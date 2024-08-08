@@ -33,18 +33,52 @@ const guardians = {
 // Function to generate playlist based on preferred genre
 function generatePlaylist(guardians, songs) {
     // Use the map() function to create playlists for each Guardian
-    return guardians.map(guardians => {
-        const playlist = songs.filter(song => sessionStorage.genre === guardian.prefferedGenre);
-
-        // Return an object with the guardian's name and their playlist
-        return {
-            guardianName: guardian.name,
-            playlist: playlist
-        };
+    const playlists = {};
+  
+    for (const guardian in guardians) {
+      const genre = guardians[guardian];
+      playlists[guardian] = songs.filter((song) => song.genre === genre);
+    }
+  
+    return playlists;
+  }
+  
+  // Loop through each Guardian
+  for (const guardian in guardians) {
+    // Filter songs based on the Guardian's preferred genre
+    const playlistSongs = songs.filter(
+      (song) => song.genre === guardians[guardian]
+    );
+  
+    // Create playlist ContainerEl element
+    const playlistContainerEl = document.createElement("div");
+    playlistContainerEl.classList.add("playlist");
+  
+    // Create heading for the playlist
+    const playlistHeading = document.createElement("h2");
+    playlistHeading.textContent = `${guardian}'s Playlist (${guardians[guardian]})`;
+  
+    // Append heading to playlist ContainerEl
+    playlistContainerEl.appendChild(playlistHeading);
+  
+    // Create list for songs
+    const songList = document.createElement("ul");
+  
+    // Loop through playlist songs and create list items
+    playlistSongs.forEach((song) => {
+      const listItem = document.createElement("li");
+      listItem.classList.add("song");
+      listItem.innerHTML = `<span class="song-title">${song.title}</span> by ${song.artist}`;
+      songList.appendChild(listItem);
     });
-}
-
-// Call generatePlaylist and display the playlists for each Guardian
-generatePlaylist(guardians, songs);
+  
+    // Append song list to playlist ContainerEl
+    playlistContainerEl.appendChild(songList);
+  
+    // Append playlist ContainerEl to #playlists div in the HTML
+    document.getElementById("playlists").appendChild(playlistContainerEl);
+  }
+  // Call generatePlaylist and display the playlists for each Guardian
+  generatePlaylist(guardians, songs);
 
 
